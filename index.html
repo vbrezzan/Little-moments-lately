@@ -107,6 +107,12 @@
           <button id="exportBtn" class="secondary">↓ Backup erstellen</button>
           <label class="secondary import-label">↑ Backup wiederherstellen<input id="importInput" type="file" accept="application/json,.json" hidden></label>
         </div>
+        <div class="storage-info">
+          <p id="lastBackupLabel" class="privacy-note">Backup-Status wird geladen …</p>
+          <p id="storageUsage" class="storage-usage">Speicherbelegung wird geladen …</p>
+          <div class="storage-meter"><div id="storageMeterFill"></div></div>
+          <p class="privacy-note">Die Speicheranzeige ist ein ungefährer Richtwert des Browsers.</p>
+        </div>
         <p class="privacy-note">Privat auf diesem Gerät · Keine Cloud-Synchronisierung · Kein Benutzerkonto</p>
       </section>
     </main>
