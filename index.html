@@ -41,7 +41,7 @@
         <button class="category" data-action="year"><span class="cat-icon">▦</span><b>Jahresmomente</b><small>Kalender & Ereignisse</small></button>
       </section>
 
-      <section class="memory-section">
+      <section class="memory-section" id="memorySection">
         <div class="section-heading">
           <div><div class="eyebrow">DEINE SAMMLUNG</div><h2 id="listHeading">Alle Erinnerungen</h2></div>
           <span class="count" id="entryCount">0 Einträge</span>
@@ -110,7 +110,7 @@
         <p class="privacy-note">Ereignisse können einen einzelnen Tag oder einen längeren Zeitraum umfassen. Vergangene Jahre bleiben erhalten.</p>
       </section>
 
-      <section class="storage-panel panel" aria-label="Speicherübersicht">
+      <section class="storage-panel panel" id="storagePanel" aria-label="Speicherübersicht">
         <div class="eyebrow">SPEICHER & SICHERUNG</div>
         <h2>Dein Speicherplatz</h2>
         <p id="storageUsage" class="storage-usage">Speicherbelegung wird geprüft …</p>
@@ -118,7 +118,7 @@
         <p id="lastBackupLabel" class="privacy-note">Noch kein Backup auf diesem Gerät vermerkt.</p>
       </section>
 
-      <section class="backup-panel panel">
+      <section class="backup-panel panel" id="backupPanel">
         <div class="backup-copy">
           <div class="eyebrow">DEINE DATEN</div>
           <h2>Deine Erinnerungen bleiben bei dir.</h2>
@@ -163,6 +163,7 @@
       <p class="tiny-note">Tipp: Fotos vergrößern die Backup-Datei. Sichere sie deshalb regelmäßig.</p>
     </form>
   </dialog>
+  <button id="homeButton" class="home-button" type="button" aria-label="Zur Startseite" title="Zur Startseite">⌂</button>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>
 </body>
