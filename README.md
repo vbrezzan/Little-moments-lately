@@ -42,3 +42,21 @@ Hinweis: Die automatische Bildverkleinerung beginnt erst, nachdem Android ein Fo
 
 ## Monatsnotizen (Version 3)
 Für Tiago, Luan und Lira gibt es pro Monat eine eigene freie Notizsammlung. Notizen können hinzugefügt, bearbeitet und gelöscht werden. Sie werden lokal in einem zusätzlichen IndexedDB-Store gespeichert und in Backups exportiert/importiert. Beim ersten Öffnen dieser Version wird die bestehende Datenbank automatisch von Version 2 auf Version 3 erweitert; vorhandene Erinnerungen und Gewohnheiten werden nicht absichtlich gelöscht.
+
+
+Foto-Komprimierung (Version 6): Neue Fotos werden auf maximal 800 Pixel an der längsten Seite verkleinert und als JPEG mit 40 % Qualität gespeichert. Bereits gespeicherte Fotos werden nicht nachträglich verändert.
+
+
+Speicheranzeige (Version 7): zeigt belegten Speicher, geschätzten freien Speicher (Browser-Limit minus Belegung) und das geschätzte Gesamtlimit. Die Werte sind Näherungen des Browsers und keine garantierte Speicherzusage.
+
+
+## Version 8
+
+- Habit Tracker: past dates can be selected in the calendar and checked retroactively. Future dates cannot be marked.
+- Favorites collection for books, films, series and other favorites, with creator, year, rating, status and notes.
+- Yearly memories: 12-month calendar, marked dates, date-range events (e.g. multi-week holidays), categories, people and descriptions. Previous years remain accessible; a new year is available automatically through year navigation.
+- Backup format version 5 includes entries, habits, monthly notes, favorites and yearly events. Import remains additive and skips IDs already present.
+- IndexedDB schema upgraded to version 4 without deleting existing stores or data.
+- Service worker cache bumped to little-moments-v9.
+
+To update, replace all seven files in the existing GitHub Pages repository and commit. Existing local data is preserved by the database upgrade. As always, create a backup before updating as a precaution.
