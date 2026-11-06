@@ -37,6 +37,8 @@
         <button class="category" data-category="Alle"><span class="cat-icon">◷</span><b>Zeitreise</b><small>Alle Erinnerungen</small></button>
         <button class="category" data-action="tracker"><span class="cat-icon">✓</span><b>Habit Tracker</b><small>Deine Routinen</small></button>
         <button class="category" data-action="monthly"><span class="cat-icon">▤</span><b>Monatsnotizen</b><small>Gedanken sammeln</small></button>
+        <button class="category" data-action="favorites"><span class="cat-icon">♡</span><b>Lieblingssammlung</b><small>Bücher, Filme & Serien</small></button>
+        <button class="category" data-action="year"><span class="cat-icon">▦</span><b>Jahresmomente</b><small>Kalender & Ereignisse</small></button>
       </section>
 
       <section class="memory-section">
@@ -62,7 +64,7 @@
           <button class="primary" id="addHabitBtn">＋ Gewohnheit</button>
         </div>
         <div class="tracker-toolbar">
-          <div><b>Heute</b><div class="muted-small" id="todayLabel"></div></div>
+          <div><b id="trackerDayHeading">Ausgewählter Tag</b><div class="muted-small" id="todayLabel"></div></div><button class="secondary" id="trackerTodayBtn" type="button">Zu heute</button>
           <span class="count" id="habitProgress">0 / 0 erledigt</span>
         </div>
         <div id="habitList" class="habit-list"></div>
@@ -97,6 +99,25 @@
         <p class="privacy-note">Eine freie Notizsammlung pro Person und Monat. Du kannst jederzeit ergänzen, bearbeiten oder löschen.</p>
       </section>
 
+
+      <section class="favorites-section" id="favoritesSection">
+        <div class="section-heading"><div><div class="eyebrow">DEINE PERSÖNLICHEN FAVORITEN</div><h2>Lieblingssammlung</h2></div><button class="primary" id="addFavoriteBtn">＋ Hinzufügen</button></div>
+        <div class="monthly-panel panel"><div class="filter-row" id="favoriteFilters"><button class="filter active" data-fav-filter="Alle">Alle</button><button class="filter" data-fav-filter="Buch">Bücher</button><button class="filter" data-fav-filter="Film">Filme</button><button class="filter" data-fav-filter="Serie">Serien</button><button class="filter" data-fav-filter="Sonstiges">Sonstiges</button></div><input id="favoriteSearch" class="wide-input" type="search" placeholder="Sammlung durchsuchen …"><div id="favoritesList" class="favorites-list"></div></div>
+      </section>
+      <section class="year-section" id="yearSection">
+        <div class="section-heading"><div><div class="eyebrow">DEIN JAHR IN ERINNERUNGEN</div><h2>Jahresmomente</h2></div><button class="primary" id="addEventBtn">＋ Ereignis</button></div>
+        <div class="monthly-panel panel"><div class="calendar-head"><button class="secondary small-btn" id="yearPrev">‹</button><h3 id="yearTitle"></h3><button class="secondary small-btn" id="yearNext">›</button></div><div id="yearCalendar" class="year-calendar"></div><div class="year-selection" id="yearSelection"></div><h3 class="year-events-title">Alle Ereignisse im Jahr</h3><div id="yearEvents" class="year-events"></div></div>
+        <p class="privacy-note">Ereignisse können einen einzelnen Tag oder einen längeren Zeitraum umfassen. Vergangene Jahre bleiben erhalten.</p>
+      </section>
+
+      <section class="storage-panel panel" aria-label="Speicherübersicht">
+        <div class="eyebrow">SPEICHER & SICHERUNG</div>
+        <h2>Dein Speicherplatz</h2>
+        <p id="storageUsage" class="storage-usage">Speicherbelegung wird geprüft …</p>
+        <div class="storage-meter"><div id="storageMeterFill"></div></div>
+        <p id="lastBackupLabel" class="privacy-note">Noch kein Backup auf diesem Gerät vermerkt.</p>
+      </section>
+
       <section class="backup-panel panel">
         <div class="backup-copy">
           <div class="eyebrow">DEINE DATEN</div>
@@ -107,17 +128,15 @@
           <button id="exportBtn" class="secondary">↓ Backup erstellen</button>
           <label class="secondary import-label">↑ Backup wiederherstellen<input id="importInput" type="file" accept="application/json,.json" hidden></label>
         </div>
-        <div class="storage-info">
-          <p id="lastBackupLabel" class="privacy-note">Backup-Status wird geladen …</p>
-          <p id="storageUsage" class="storage-usage">Speicherbelegung wird geladen …</p>
-          <div class="storage-meter"><div id="storageMeterFill"></div></div>
-          <p class="privacy-note">Die Speicheranzeige ist ein ungefährer Richtwert des Browsers.</p>
-        </div>
-        <p class="privacy-note">Privat auf diesem Gerät · Keine Cloud-Synchronisierung · Kein Benutzerkonto</p>
+        <p class="privacy-note">Beim Import werden nur Einträge mit bisher unbekannter ID ergänzt. Vorhandene Einträge bleiben unverändert. Privat auf diesem Gerät · Keine Cloud-Synchronisierung.</p>
       </section>
     </main>
     <footer>Little Moments <span>·</span> Deine Erinnerungen, an einem Ort.</footer>
   </div>
+
+
+  <dialog id="favoriteEditor"><form id="favoriteForm" method="dialog"><div class="dialog-head"><div><div class="eyebrow">DEINE SAMMLUNG</div><h2 id="favoriteDialogTitle">Favorit hinzufügen</h2></div><button type="button" class="close" id="closeFavorite">×</button></div><input type="hidden" id="favoriteId"><label>Kategorie<select id="favoriteType"><option>Buch</option><option>Film</option><option>Serie</option><option>Sonstiges</option></select></label><label>Titel<input id="favoriteTitle" maxlength="120" required></label><label>Autor / Regie / Interpret <span class="optional">(optional)</span><input id="favoriteCreator" maxlength="100"></label><label>Jahr <span class="optional">(optional)</span><input id="favoriteYear" type="number" min="1800" max="2200"></label><label>Bewertung<select id="favoriteRating"><option value="">Keine Bewertung</option><option value="5">★★★★★</option><option value="4">★★★★☆</option><option value="3">★★★☆☆</option><option value="2">★★☆☆☆</option><option value="1">★☆☆☆☆</option></select></label><label>Status<select id="favoriteStatus"><option>Favorit</option><option>Auf meiner Liste</option><option>Gerade dabei</option><option>Abgeschlossen</option></select></label><label>Notiz <span class="optional">(optional)</span><textarea id="favoriteNote" rows="4" maxlength="2000"></textarea></label><div class="form-actions"><button type="button" class="secondary" id="cancelFavorite">Abbrechen</button><button type="submit" class="primary">Speichern</button></div></form></dialog>
+  <dialog id="eventEditor"><form id="eventForm" method="dialog"><div class="dialog-head"><div><div class="eyebrow">JAHRESMOMENT</div><h2 id="eventDialogTitle">Ereignis hinzufügen</h2></div><button type="button" class="close" id="closeEvent">×</button></div><input type="hidden" id="eventId"><label>Titel<input id="eventTitle" maxlength="120" placeholder="Zum Beispiel Sommerurlaub" required></label><label>Kategorie<select id="eventCategory"><option>Urlaub</option><option>Familie</option><option>Geburtstag</option><option>Reise</option><option>Besonderer Moment</option><option>Sonstiges</option></select></label><label>Von <input id="eventStart" type="date" required></label><label>Bis <input id="eventEnd" type="date" required></label><label>Mit wem? <span class="optional">(optional)</span><input id="eventPeople" maxlength="120"></label><label>Beschreibung / Erinnerung <textarea id="eventDescription" rows="5" maxlength="4000"></textarea></label><div class="form-actions"><button type="button" class="secondary" id="cancelEvent">Abbrechen</button><button type="submit" class="primary">Speichern</button></div></form></dialog>
 
   <dialog id="monthlyEditor">
     <form id="monthlyForm" method="dialog">
