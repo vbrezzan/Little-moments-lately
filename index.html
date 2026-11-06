@@ -35,6 +35,8 @@
         <button class="category" data-category="Meilensteine"><span class="cat-icon">✧</span><b>Meilensteine</b><small>Erste Male und mehr</small></button>
         <button class="category" data-category="Fotos"><span class="cat-icon">▧</span><b>Fotos</b><small>Bilder und Momente</small></button>
         <button class="category" data-category="Alle"><span class="cat-icon">◷</span><b>Zeitreise</b><small>Alle Erinnerungen</small></button>
+        <button class="category" data-action="tracker"><span class="cat-icon">✓</span><b>Habit Tracker</b><small>Deine Routinen</small></button>
+        <button class="category" data-action="monthly"><span class="cat-icon">▤</span><b>Monatsnotizen</b><small>Gedanken sammeln</small></button>
       </section>
 
       <section class="memory-section">
@@ -54,6 +56,47 @@
         <div id="entries" class="entries"></div>
       </section>
 
+      <section class="tracker-section" id="trackerSection">
+        <div class="section-heading">
+          <div><div class="eyebrow">KLEINE SCHRITTE, JEDEN TAG</div><h2>Habit Tracker</h2></div>
+          <button class="primary" id="addHabitBtn">＋ Gewohnheit</button>
+        </div>
+        <div class="tracker-toolbar">
+          <div><b>Heute</b><div class="muted-small" id="todayLabel"></div></div>
+          <span class="count" id="habitProgress">0 / 0 erledigt</span>
+        </div>
+        <div id="habitList" class="habit-list"></div>
+        <div class="calendar-panel panel">
+          <div class="calendar-head"><button class="secondary small-btn" id="prevMonth" aria-label="Vorheriger Monat">‹</button><h3 id="monthTitle"></h3><button class="secondary small-btn" id="nextMonth" aria-label="Nächster Monat">›</button></div>
+          <div class="calendar-grid" id="calendarGrid"></div>
+          <div class="calendar-legend"><span><i class="legend-dot done-dot"></i>Mindestens eine Gewohnheit erledigt</span><span><i class="legend-dot full-dot"></i>Alle erledigt</span></div>
+          <div class="day-details" id="dayDetails"></div>
+        </div>
+        <p class="privacy-note">Persönliche und familiäre Gewohnheiten · Fortschritt wird nur auf diesem Gerät gespeichert.</p>
+      </section>
+
+      <dialog id="habitEditor">
+        <form id="habitForm" method="dialog">
+          <div class="dialog-head"><div><div class="eyebrow">NEUE ROUTINE</div><h2>Gewohnheit hinzufügen</h2></div><button type="button" class="close" id="closeHabit">×</button></div>
+          <label>Name der Gewohnheit<input id="habitName" maxlength="80" placeholder="Zum Beispiel gemeinsam lesen" required></label>
+          <label>Bereich<select id="habitScope"><option value="Persönlich">Persönlich</option><option value="Familie">Familie</option></select></label>
+          <label>Für wen? <span class="optional">(optional)</span><input id="habitPerson" maxlength="60" placeholder="Zum Beispiel Tiago, Luan oder alle"></label>
+          <label>Rhythmus<select id="habitFrequency"><option value="Täglich">Täglich</option><option value="Wöchentlich">Wöchentlich</option></select></label>
+          <div class="form-actions"><button type="button" class="secondary" id="cancelHabit">Abbrechen</button><button type="submit" class="primary">Speichern</button></div>
+        </form>
+      </dialog>
+
+      <section class="monthly-section" id="monthlySection">
+        <div class="section-heading"><div><div class="eyebrow">GEDANKEN SAMMELN</div><h2>Monatsnotizen</h2></div><button class="primary" id="addMonthlyNote">＋ Notiz</button></div>
+        <div class="monthly-panel panel">
+          <div class="calendar-head"><button class="secondary small-btn" id="monthlyPrev" aria-label="Vorheriger Monat">‹</button><h3 id="monthlyTitle"></h3><button class="secondary small-btn" id="monthlyNext" aria-label="Nächster Monat">›</button></div>
+          <div class="person-tabs" id="monthlyPeople"><button class="person-tab active" data-person="Tiago">Tiago</button><button class="person-tab" data-person="Luan">Luan</button><button class="person-tab" data-person="Lira">Lira</button></div>
+          <p class="monthly-hint" id="monthlyHint">Lose Gedanken, Beobachtungen und kleine Entwicklungen – alles darf hier Platz haben.</p>
+          <div id="monthlyNotes" class="monthly-notes"></div>
+        </div>
+        <p class="privacy-note">Eine freie Notizsammlung pro Person und Monat. Du kannst jederzeit ergänzen, bearbeiten oder löschen.</p>
+      </section>
+
       <section class="backup-panel panel">
         <div class="backup-copy">
           <div class="eyebrow">DEINE DATEN</div>
@@ -70,6 +113,16 @@
     <footer>Little Moments <span>·</span> Deine Erinnerungen, an einem Ort.</footer>
   </div>
 
+  <dialog id="monthlyEditor">
+    <form id="monthlyForm" method="dialog">
+      <div class="dialog-head"><div><div class="eyebrow">MONATSNOTIZ</div><h2 id="monthlyDialogTitle">Notiz festhalten</h2></div><button type="button" class="close" id="closeMonthly">×</button></div>
+      <input type="hidden" id="monthlyNoteId">
+      <label>Für wen?<select id="monthlyNotePerson"><option>Tiago</option><option>Luan</option><option>Lira</option></select></label>
+      <label>Notiz<textarea id="monthlyNoteText" rows="7" maxlength="5000" placeholder="Ein Gedanke, eine Beobachtung, etwas Lustiges oder etwas, das du nicht vergessen möchtest …" required></textarea></label>
+      <div class="form-actions"><button type="button" class="secondary" id="cancelMonthly">Abbrechen</button><button type="submit" class="primary">Speichern</button></div>
+    </form>
+  </dialog>
+
   <dialog id="editor">
     <form id="entryForm" method="dialog">
       <div class="dialog-head"><div><div class="eyebrow">NEUE ERINNERUNG</div><h2 id="dialogTitle">Einen Moment festhalten</h2></div><button type="button" class="close" id="closeDialog" aria-label="Schließen">×</button></div>
@@ -78,7 +131,7 @@
       <label>Titel<input id="title" maxlength="100" placeholder="Ein besonderer Moment …" required></label>
       <label>Datum<input id="date" type="date" required></label>
       <label>Erinnerung<textarea id="body" rows="5" placeholder="Was möchtest du festhalten?"></textarea></label>
-      <label>Person <span class="optional">(optional)</span><input id="person" maxlength="60" placeholder="Zum Beispiel Tiago oder Luan"></label>
+      <label id="personLabel">Wer hat es gesagt / Für wen? <span class="optional">(optional)</span><input id="person" maxlength="60" placeholder="Zum Beispiel Tiago oder Luan"></label>
       <label>Foto <span class="optional">(optional, wird nur auf diesem Gerät gespeichert)</span><input id="photo" type="file" accept="image/*"></label>
       <div id="photoPreview" class="photo-preview"></div>
       <div class="form-actions"><button type="button" class="secondary" id="cancelBtn">Abbrechen</button><button type="submit" class="primary">Speichern</button></div>
