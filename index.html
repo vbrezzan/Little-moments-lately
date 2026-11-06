@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f5f0">
+  <meta name="description" content="Dein privates Erinnerungsbuch.">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <title>Little Moments</title>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div>
+        <div class="brand">Little Moments</div>
+        <div class="tagline">Dein persönliches Erinnerungsbuch</div>
+      </div>
+      <button id="installBtn" class="icon-button" hidden aria-label="App installieren" title="App installieren">↓</button>
+    </header>
+
+    <main>
+      <section class="welcome panel">
+        <div class="eyebrow">DEIN ORT FÜR DAS, WAS BLEIBT</div>
+        <h1>Die kleinen Momente.<br><span>Für immer festgehalten.</span></h1>
+        <p>Gedanken, Worte und Erinnerungen aus eurem Familienleben.</p>
+        <button class="primary" id="quickAdd">＋ Moment festhalten</button>
+      </section>
+
+      <section class="category-grid" aria-label="Kategorien">
+        <button class="category" data-category="Tagebuch"><span class="cat-icon">✎</span><b>Tagebuch</b><small>Deine Gedanken</small></button>
+        <button class="category" data-category="Kindersprüche"><span class="cat-icon">♡</span><b>Kindersprüche</b><small>Ihre eigenen Worte</small></button>
+        <button class="category" data-category="Zitate"><span class="cat-icon">“ ”</span><b>Zitate</b><small>Worte zum Bewahren</small></button>
+        <button class="category" data-category="Meilensteine"><span class="cat-icon">✧</span><b>Meilensteine</b><small>Erste Male und mehr</small></button>
+        <button class="category" data-category="Fotos"><span class="cat-icon">▧</span><b>Fotos</b><small>Bilder und Momente</small></button>
+        <button class="category" data-category="Alle"><span class="cat-icon">◷</span><b>Zeitreise</b><small>Alle Erinnerungen</small></button>
+      </section>
+
+      <section class="memory-section">
+        <div class="section-heading">
+          <div><div class="eyebrow">DEINE SAMMLUNG</div><h2 id="listHeading">Alle Erinnerungen</h2></div>
+          <span class="count" id="entryCount">0 Einträge</span>
+        </div>
+        <label class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Erinnerungen suchen …" autocomplete="off"></label>
+        <div class="filter-row" id="filters">
+          <button class="filter active" data-filter="Alle">Alle</button>
+          <button class="filter" data-filter="Tagebuch">Tagebuch</button>
+          <button class="filter" data-filter="Kindersprüche">Sprüche</button>
+          <button class="filter" data-filter="Zitate">Zitate</button>
+          <button class="filter" data-filter="Meilensteine">Meilensteine</button>
+          <button class="filter" data-filter="Fotos">Fotos</button>
+        </div>
+        <div id="entries" class="entries"></div>
+      </section>
+
+      <section class="backup-panel panel">
+        <div class="backup-copy">
+          <div class="eyebrow">DEINE DATEN</div>
+          <h2>Deine Erinnerungen bleiben bei dir.</h2>
+          <p>Die Einträge werden auf diesem Gerät gespeichert. Erstelle regelmäßig eine Backup-Datei und bewahre sie sicher auf.</p>
+        </div>
+        <div class="backup-actions">
+          <button id="exportBtn" class="secondary">↓ Backup erstellen</button>
+          <label class="secondary import-label">↑ Backup wiederherstellen<input id="importInput" type="file" accept="application/json,.json" hidden></label>
+        </div>
+        <p class="privacy-note">Privat auf diesem Gerät · Keine Cloud-Synchronisierung · Kein Benutzerkonto</p>
+      </section>
+    </main>
+    <footer>Little Moments <span>·</span> Deine Erinnerungen, an einem Ort.</footer>
+  </div>
+
+  <dialog id="editor">
+    <form id="entryForm" method="dialog">
+      <div class="dialog-head"><div><div class="eyebrow">NEUE ERINNERUNG</div><h2 id="dialogTitle">Einen Moment festhalten</h2></div><button type="button" class="close" id="closeDialog" aria-label="Schließen">×</button></div>
+      <input type="hidden" id="entryId">
+      <label>Kategorie<select id="category" required><option>Tagebuch</option><option>Kindersprüche</option><option>Zitate</option><option>Meilensteine</option><option>Fotos</option></select></label>
+      <label>Titel<input id="title" maxlength="100" placeholder="Ein besonderer Moment …" required></label>
+      <label>Datum<input id="date" type="date" required></label>
+      <label>Erinnerung<textarea id="body" rows="5" placeholder="Was möchtest du festhalten?"></textarea></label>
+      <label>Person <span class="optional">(optional)</span><input id="person" maxlength="60" placeholder="Zum Beispiel Tiago oder Luan"></label>
+      <label>Foto <span class="optional">(optional, wird nur auf diesem Gerät gespeichert)</span><input id="photo" type="file" accept="image/*"></label>
+      <div id="photoPreview" class="photo-preview"></div>
+      <div class="form-actions"><button type="button" class="secondary" id="cancelBtn">Abbrechen</button><button type="submit" class="primary">Speichern</button></div>
+      <p class="tiny-note">Tipp: Fotos vergrößern die Backup-Datei. Sichere sie deshalb regelmäßig.</p>
+    </form>
+  </dialog>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
