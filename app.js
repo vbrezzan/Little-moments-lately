@@ -1,11 +1,11 @@
 const DB_NAME="little-moments-db", DB_VERSION=3;
 const ENTRY_STORE="memories", HABIT_STORE="habits", NOTE_STORE="monthlyNotes";
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 let db, activeFilter="Alle", pendingPhoto=null, deferredInstall=null;
 let calendarMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1), selectedDay=today();
 let monthlyMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1), monthlyPerson="Tiago";
 const $=id=>document.getElementById(id);
 const categories=["Tagebuch","Kindersprüche","Zitate","Meilensteine","Fotos"];
-const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 function openDB(){return new Promise((resolve,reject)=>{const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{const d=req.result;if(!d.objectStoreNames.contains(ENTRY_STORE))d.createObjectStore(ENTRY_STORE,{keyPath:"id"});if(!d.objectStoreNames.contains(HABIT_STORE))d.createObjectStore(HABIT_STORE,{keyPath:"id"});if(!d.objectStoreNames.contains(NOTE_STORE))d.createObjectStore(NOTE_STORE,{keyPath:"id"})};req.onsuccess=()=>{db=req.result;resolve(db)};req.onerror=()=>reject(req.error)})}
 function getAll(store){return new Promise((resolve,reject)=>{const r=db.transaction(store).objectStore(store).getAll();r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}
 function put(store,item){return new Promise((resolve,reject)=>{const r=db.transaction(store,"readwrite").objectStore(store).put(item);r.onsuccess=()=>resolve();r.onerror=()=>reject(r.error)})}
