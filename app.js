@@ -18,7 +18,7 @@ function formatDate(s){if(!s)return "";const [y,m,d]=s.split("-");return `${d}.$
 function dateLabel(s){return new Date(`${s}T12:00:00`).toLocaleDateString("de-DE",{day:"numeric",month:"long",year:"numeric"})}
 async function render(){const all=await allEntries(),query=$("search").value.trim().toLowerCase();const list=all.filter(e=>(activeFilter==="Alle"||e.category===activeFilter)&&(!query||[e.title,e.body,e.person,e.category].join(" ").toLowerCase().includes(query)));$("entryCount").textContent=`${list.length} ${list.length===1?"Eintrag":"Einträge"}`;$("listHeading").textContent=activeFilter==="Alle"?"Alle Erinnerungen":activeFilter;$("entries").innerHTML=list.length?list.map(e=>`<article class="entry"><div><div class="entry-top"><span class="tag">${esc(e.category)}</span><span>${formatDate(e.date)}</span></div><h3>${esc(e.title)}</h3>${e.body?`<p>${esc(e.body)}</p>`:""}${e.photo?`<img class="entry-photo" src="${e.photo}" alt="Foto zur Erinnerung" loading="lazy">`:""}${e.person?`<div class="entry-person">${e.category==="Kindersprüche"?"Gesagt von":"Für"}: ${esc(e.person)}</div>`:""}</div><div class="entry-tools"><button title="Bearbeiten" aria-label="Bearbeiten" data-edit="${e.id}">✎</button><button title="Löschen" aria-label="Löschen" data-delete="${e.id}">×</button></div></article>`).join(""):`<div class="empty">${query?"Keine passenden Erinnerungen gefunden.":"Hier ist noch Platz für deine Erinnerungen."}<br>Halte deinen ersten kleinen Moment fest.</div>`;document.querySelectorAll(".filter").forEach(b=>b.classList.toggle("active",b.dataset.filter===activeFilter));document.querySelectorAll(".category").forEach(b=>b.classList.toggle("selected",b.dataset.category===activeFilter))}
 function openEditor(category="Tagebuch",entry=null){$("entryForm").reset();pendingPhoto=null;$("photoPreview").innerHTML="";$("entryId").value=entry?.id||"";$("category").value=entry?.category||category;$("title").value=entry?.title||"";$("date").value=entry?.date||today();$("body").value=entry?.body||"";$("person").value=entry?.person||"";$("personLabel").firstChild.textContent=$("category").value==="Kindersprüche"?"Gesagt von ":"Person ";$("dialogTitle").textContent=entry?"Erinnerung bearbeiten":"Einen Moment festhalten";if(entry?.photo){pendingPhoto=entry.photo;$("photoPreview").innerHTML=`<img src="${entry.photo}" alt="Foto-Vorschau">`}$("editor").showModal()}
-async function compressPhoto(file){if(!file.type.startsWith("image/"))throw new Error("Bitte wähle eine Bilddatei aus.");const bitmap=await createImageBitmap(file);const max=1600,scale=Math.min(1,max/Math.max(bitmap.width,bitmap.height));const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));const ctx=canvas.getContext("2d",{alpha:false});ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close?.();return canvas.toDataURL("image/jpeg",0.78)}
+async function compressPhoto(file){if(!file.type.startsWith("image/"))throw new Error("Bitte wähle eine Bilddatei aus.");const bitmap=await createImageBitmap(file);const max=1200,scale=Math.min(1,max/Math.max(bitmap.width,bitmap.height));const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));const ctx=canvas.getContext("2d",{alpha:false});ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close?.();return canvas.toDataURL("image/jpeg",0.58)}
 $("photo").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)return;const preview=$("photoPreview");preview.textContent="Foto wird vorbereitet …";try{pendingPhoto=await compressPhoto(f);preview.innerHTML=`<img src="${pendingPhoto}" alt="Foto-Vorschau">`;toast("Foto verkleinert und bereit.")}catch(err){preview.textContent="";toast(err.message||"Foto konnte nicht verarbeitet werden.");e.target.value=""}});
 $("category").addEventListener("change",()=>{$("personLabel").firstChild.textContent=$("category").value==="Kindersprüche"?"Gesagt von ":"Person ";});
 $("entryForm").addEventListener("submit",async e=>{e.preventDefault();const id=$("entryId").value||crypto.randomUUID();const old=$("entryId").value?(await allEntries()).find(x=>x.id===id):null;const entry={id,category:$("category").value,title:$("title").value.trim(),date:$("date").value,body:$("body").value.trim(),person:$("person").value.trim(),photo:pendingPhoto,createdAt:old?.createdAt||Date.now(),updatedAt:Date.now()};if(!entry.title||!entry.date)return;try{await put(ENTRY_STORE,entry);$("editor").close();await render();toast("Erinnerung gespeichert.")}catch(err){toast("Speichern fehlgeschlagen. Möglicherweise ist der Gerätespeicher voll.")}});
@@ -43,8 +43,54 @@ $("monthlyForm").addEventListener("submit",async e=>{e.preventDefault();const id
 $("monthlyPeople").addEventListener("click",e=>{const b=e.target.closest("[data-person]");if(!b)return;monthlyPerson=b.dataset.person;renderMonthly()});
 $("monthlyPrev").onclick=()=>{monthlyMonth=new Date(monthlyMonth.getFullYear(),monthlyMonth.getMonth()-1,1);renderMonthly()};$("monthlyNext").onclick=()=>{monthlyMonth=new Date(monthlyMonth.getFullYear(),monthlyMonth.getMonth()+1,1);renderMonthly()};
 $("monthlyNotes").addEventListener("click",async e=>{const edit=e.target.closest("[data-month-edit]"),del=e.target.closest("[data-month-delete]");if(edit){const n=(await allMonthlyNotes()).find(x=>x.id===edit.dataset.monthEdit);if(n)openMonthlyEditor(n)}if(del&&confirm("Diese Monatsnotiz löschen?")){await remove(NOTE_STORE,del.dataset.monthDelete);renderMonthly();toast("Notiz gelöscht.")}});
-$("exportBtn").onclick=async()=>{const payload={app:"Little Moments",formatVersion:3,exportedAt:new Date().toISOString(),entries:await allEntries(),habits:await allHabits(),monthlyNotes:await allMonthlyNotes()};const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json"});const url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=`little-moments-backup-${today()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);toast("Backup-Datei erstellt.")};
-$("importInput").addEventListener("change",async e=>{const file=e.target.files[0];if(!file)return;try{const data=JSON.parse(await file.text());if(data.app!=="Little Moments"||!Array.isArray(data.entries))throw new Error("Das ist keine gültige Little Moments-Backup-Datei.");if(!confirm(`${data.entries.length} Erinnerungen, ${(data.habits||[]).length} Gewohnheiten und ${(data.monthlyNotes||[]).length} Monatsnotizen importieren? Einträge mit gleicher ID werden ersetzt.`))return;for(const x of data.entries){if(x.id&&x.title&&x.date&&categories.includes(x.category))await put(ENTRY_STORE,x)}for(const h of (data.habits||[])){if(h.id&&h.name)await put(HABIT_STORE,h)}for(const n of (data.monthlyNotes||[])){if(n.id&&n.person&&n.month&&n.text)await put(NOTE_STORE,n)}await render();await renderTracker();await renderMonthly();toast("Backup wiederhergestellt.")}catch(err){alert(err.message||"Datei konnte nicht gelesen werden.")}finally{e.target.value=""}});
+async function updateStorageInfo(){
+  const label=$("lastBackupLabel");
+  const last=localStorage.getItem("little-moments-last-backup");
+  label.textContent=last?`Letztes Backup erstellt: ${new Date(last).toLocaleString("de-DE")}`:"Noch kein Backup auf diesem Gerät vermerkt.";
+  if(navigator.storage?.estimate){
+    try{
+      const estimate=await navigator.storage.estimate();
+      const used=estimate.usage||0, quota=estimate.quota||0;
+      const mb=n=>`${(n/1024/1024).toFixed(1).replace(".",",")} MB`;
+      $("storageUsage").textContent=quota?`${mb(used)} verwendet · ungefähr ${mb(quota)} verfügbarer Browser-Speicher als Richtwert`:`${mb(used)} verwendet`;
+      $("storageMeterFill").style.width=quota?`${Math.min(100,used/quota*100)}%`:"0%";
+    }catch(e){$("storageUsage").textContent="Speicherbelegung kann auf diesem Gerät nicht angezeigt werden."}
+  }else{$("storageUsage").textContent="Dein Browser stellt keine Speicherübersicht bereit."}
+}
+$("exportBtn").onclick=async()=>{
+  try{
+    const payload={app:"Little Moments",formatVersion:4,exportedAt:new Date().toISOString(),entries:await allEntries(),habits:await allHabits(),monthlyNotes:await allMonthlyNotes()};
+    const blob=new Blob([JSON.stringify(payload)],{type:"application/json"});
+    const url=URL.createObjectURL(blob),a=document.createElement("a");
+    a.href=url;a.download=`little-moments-backup-${today()}.json`;document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),1500);
+    localStorage.setItem("little-moments-last-backup",new Date().toISOString());
+    await updateStorageInfo();toast("Backup-Datei erstellt.");
+  }catch(err){toast("Backup konnte nicht erstellt werden. Bitte prüfe den freien Speicherplatz.")}
+};
+$("importInput").addEventListener("change",async e=>{
+  const file=e.target.files[0];if(!file)return;
+  try{
+    const data=JSON.parse(await file.text());
+    if(data.app!=="Little Moments"||!Array.isArray(data.entries))throw new Error("Das ist keine gültige Little Moments-Backup-Datei.");
+    const incomingEntries=data.entries.filter(x=>x?.id&&x.title&&x.date&&categories.includes(x.category));
+    const incomingHabits=(data.habits||[]).filter(x=>x?.id&&x.name);
+    const incomingNotes=(data.monthlyNotes||[]).filter(x=>x?.id&&x.person&&x.month&&x.text);
+    const [existingEntries,existingHabits,existingNotes]=await Promise.all([getAll(ENTRY_STORE),getAll(HABIT_STORE),getAll(NOTE_STORE)]);
+    const entryIds=new Set(existingEntries.map(x=>x.id)),habitIds=new Set(existingHabits.map(x=>x.id)),noteIds=new Set(existingNotes.map(x=>x.id));
+    const freshEntries=incomingEntries.filter(x=>!entryIds.has(x.id));
+    const freshHabits=incomingHabits.filter(x=>!habitIds.has(x.id));
+    const freshNotes=incomingNotes.filter(x=>!noteIds.has(x.id));
+    const total=freshEntries.length+freshHabits.length+freshNotes.length;
+    if(!confirm(`Neue Inhalte aus dem Backup hinzufügen?\n\n${freshEntries.length} Erinnerungen\n${freshHabits.length} Gewohnheiten\n${freshNotes.length} Monatsnotizen\n\nBereits vorhandene IDs werden übersprungen. Es wird nichts überschrieben.`))return;
+    for(const x of freshEntries)await put(ENTRY_STORE,x);
+    for(const x of freshHabits)await put(HABIT_STORE,x);
+    for(const x of freshNotes)await put(NOTE_STORE,x);
+    await render();await renderTracker();await renderMonthly();await updateStorageInfo();
+    toast(total?`${total} neue Einträge hinzugefügt.`:"Keine neuen Einträge gefunden.");
+  }catch(err){alert(err.message||"Datei konnte nicht gelesen werden.")}
+  finally{e.target.value=""}
+});
 window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;$("installBtn").hidden=false});$("installBtn").onclick=async()=>{if(!deferredInstall)return;deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null;$("installBtn").hidden=true};
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
-(async()=>{try{await openDB();await render();await renderTracker();await renderMonthly()}catch(e){$("entries").innerHTML='<div class="empty">Der lokale Speicher konnte nicht geöffnet werden. Bitte verwende einen aktuellen Browser.</div>'}})();
+(async()=>{try{await openDB();await render();await renderTracker();await renderMonthly();await updateStorageInfo()}catch(e){$("entries").innerHTML='<div class="empty">Der lokale Speicher konnte nicht geöffnet werden. Bitte verwende einen aktuellen Browser.</div>'}})();
