@@ -1,4 +1,4 @@
-const DB_NAME="little-moments-db", DB_VERSION=4;
+const DB_NAME="little-moments-db", DB_VERSION=5;
 const ENTRY_STORE="memories", HABIT_STORE="habits", NOTE_STORE="monthlyNotes", FAVORITE_STORE="favorites", EVENT_STORE="yearEvents";
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`};
 let db, activeFilter="Alle", pendingPhoto=null, pendingAudio=null, pendingMonthlyAudio=null, deferredInstall=null;
