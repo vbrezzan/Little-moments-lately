@@ -96,3 +96,12 @@ Version 16: Breite Karte „Alle Erinnerungen“ direkt unter „Moment festhalt
 
 
 Version 17: Die Startseitenkarte „Alle Erinnerungen“ ist jetzt mit der vollständigen Erinnerungsliste verknüpft. Beim Antippen werden Suche und Datumsfilter zurückgesetzt, alle Kategorien angezeigt und die Erinnerungsliste geöffnet.
+
+
+## Version 19 – Ernährung
+- Neue Ernährungskarte mit Wochenplan für Frühstück, Mittag- und Abendessen.
+- Eigene Rezeptsammlung mit Kategorien, Suche, Foto und Bearbeitung.
+- Rezepte können aus Fotos, PDF, Word und Textdateien übernommen werden; erkannter Text wird bearbeitbar eingefügt.
+- Einkaufsliste erstellt sich aus den Zutaten der Rezepte im ausgewählten Wochenplan; zusätzliche Zutaten können manuell ergänzt und abgehakt werden.
+- Rezepte, Wochenplan und Einkaufsliste werden lokal in IndexedDB gespeichert und in Backups einbezogen.
+- Datenbankversion 5 ergänzt neue Stores; bestehende Erinnerungen bleiben erhalten.
