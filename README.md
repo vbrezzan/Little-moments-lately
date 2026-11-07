@@ -93,3 +93,6 @@ Die Monatsübersicht zeigt für jede Gewohnheit die Anzahl der erledigten Tage i
 
 
 Version 16: Breite Karte „Alle Erinnerungen“ direkt unter „Moment festhalten“; direkte Monats- und Jahresauswahl für Erinnerungen, Tagebuch, Habit Tracker, Monatsnotizen und Jahresmomente.
+
+
+Version 17: Die Startseitenkarte „Alle Erinnerungen“ ist jetzt mit der vollständigen Erinnerungsliste verknüpft. Beim Antippen werden Suche und Datumsfilter zurückgesetzt, alle Kategorien angezeigt und die Erinnerungsliste geöffnet.
