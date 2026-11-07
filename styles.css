@@ -44,19 +44,5 @@
 /* Export section and global search results */
 .export-section{margin:34px 0 0;scroll-margin-top:16px}.export-panel{display:grid;gap:14px}.export-types{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.export-types legend{font-size:12px;font-weight:700;padding:0 5px}.export-types label,.export-photo-option{display:flex;align-items:center;gap:8px;font-size:12px}.export-types input,.export-photo-option input{accent-color:var(--accent-dark)}.export-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.export-filters label{display:grid;gap:5px;font-size:11px;color:var(--muted)}.export-filters input,.export-filters select{width:100%;min-width:0;padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font:inherit;font-size:12px}.search-extra{background:#fbfaf7}.search-extra p{white-space:pre-wrap}@media(max-width:480px){.export-filters{grid-template-columns:1fr}.export-types{grid-template-columns:1fr}}
 
-
-/* Datei-Import */
-.import-section{margin:34px 0 0;scroll-margin-top:16px}
-.import-panel{display:grid;gap:13px}
-.import-file-label{display:flex;align-items:center;justify-content:center;min-height:54px;border:1px dashed #cfc8bb;border-radius:12px;background:#faf9f6;padding:14px;font-size:13px;font-weight:650;cursor:pointer}
-.import-file-label input{display:block;max-width:100%;margin-left:12px;font:inherit;font-size:11px}
-.import-status{font-size:12px;color:var(--muted);margin:0;overflow-wrap:anywhere}
-.import-preview{border-top:1px solid var(--line);padding-top:14px;display:grid;gap:12px}
-.import-preview[hidden]{display:none}
-.import-preview label{display:grid;gap:6px;font-size:12px;font-weight:600;color:#5f5c54}
-.import-preview textarea,.import-preview input:not([type=checkbox]),.import-preview select{width:100%;min-width:0;padding:11px 12px;border:1px solid #e2ded5;border-radius:10px;background:white;color:var(--ink);font:inherit;font-size:13px}
-.import-preview textarea{resize:vertical;line-height:1.6}
-.import-form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
-.import-original-option{display:flex!important;align-items:center;gap:8px}
-.import-original-option input{accent-color:var(--accent-dark)}
-@media(max-width:480px){.import-form-grid{grid-template-columns:1fr}.import-file-label{align-items:flex-start;flex-direction:column;gap:9px}.import-file-label input{margin-left:0}}
+/* Diary calendar and audio memories */
+.diary-calendar{margin:12px 0 14px;padding:14px}.diary-calendar-footer{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:10px;font-size:11px;color:var(--muted)}.diary-calendar .calendar-cell.has-done{background:#e6e1d6;font-weight:750}.entry-audio,.audio-preview audio{display:block;width:min(100%,360px);margin-top:10px}.audio-preview{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.text-button{border:0;background:transparent;color:var(--accent-dark);font:inherit;font-size:11px;text-decoration:underline;cursor:pointer;padding:4px}.favorite-filter-label{font-size:11px;color:var(--muted);margin-top:8px}.favorite-year-label{display:flex;align-items:center;gap:10px;font-size:11px;color:var(--muted);margin:3px 0 12px}.favorite-year-select{padding:8px 10px;border:1px solid var(--line);border-radius:9px;background:white;color:var(--ink);font:inherit;font-size:12px;min-width:110px}

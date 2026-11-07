@@ -75,11 +75,10 @@ Die Monatsübersicht zeigt für jede Gewohnheit die Anzahl der erledigten Tage i
 - Service-Worker-Cache auf little-moments-v12 aktualisiert.
 
 
-## Datei-Import (Version 13)
-- Neuer Bereich „Importieren“ für Fotos/Screenshots, PDF, DOCX, TXT und Markdown.
-- Fotos und bildbasierte PDF-Seiten werden im Browser mit Tesseract.js (Deutsch und Portugiesisch) per OCR erkannt.
-- PDF-Text wird mit PDF.js extrahiert; DOCX mit Mammoth.js.
-- Erkannter Text kann bearbeitet und als Tagebuch, Kinderspruch, Zitat, Meilenstein oder Foto-Erinnerung mit Person und Datum gespeichert werden.
-- Die Erkennung läuft lokal im Browser; die benötigten Bibliotheken und OCR-Sprachdaten werden beim ersten Gebrauch aus einem CDN geladen. Dateien werden nicht an einen KI-Dienst übertragen.
-- IndexedDB bleibt Version 4. Bestehende Erinnerungen und andere lokale Daten werden nicht verändert.
-- Service-Worker-Cache auf little-moments-v13 aktualisiert.
+## Version 14 – Tagebuch, Sprachaufnahmen und Sammlungsfilter
+- Tagebuch-Kalender mit Markierung vorhandener Einträge und Filter nach ausgewähltem Tag.
+- Kindersprüche können eine lokale Audiodatei (bis 15 MB) enthalten. Aufnahmen lassen sich in der App abspielen; es gibt keine Transkription und keine externe Übertragung.
+- Audioaufnahmen sind Bestandteil der Einträge und werden deshalb auch in JSON-Backups aufgenommen. Backups mit vielen oder großen Audiodateien können entsprechend größer werden.
+- Lieblingssammlung kann nach Kategorie, Status und Jahr gefiltert werden.
+- IndexedDB bleibt auf Version 4; vorhandene Daten werden nicht gelöscht oder migriert.
+- Service-Worker-Cache auf little-moments-v14 aktualisiert.
