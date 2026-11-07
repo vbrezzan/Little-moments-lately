@@ -39,6 +39,7 @@
         <button class="category" data-action="monthly"><span class="cat-icon">▤</span><b>Monatsnotizen</b><small>Gedanken sammeln</small></button>
         <button class="category" data-action="favorites"><span class="cat-icon">♡</span><b>Lieblingssammlung</b><small>Bücher, Filme & Serien</small></button>
         <button class="category" data-action="year"><span class="cat-icon">▦</span><b>Jahresmomente</b><small>Kalender & Ereignisse</small></button>
+        <button class="category" data-action="export"><span class="cat-icon">⇩</span><b>Exporte</b><small>Drucken & PDF</small></button>
       </section>
 
       <section class="memory-section" id="memorySection">
@@ -68,6 +69,7 @@
           <span class="count" id="habitProgress">0 / 0 erledigt</span>
         </div>
         <div id="habitList" class="habit-list"></div>
+        <div class="habit-monthly-summary panel"><div class="habit-summary-heading"><h3>Monatsübersicht pro Gewohnheit</h3><span class="muted-small">Aktueller Kalendermonat</span></div><div id="habitMonthlySummary" class="habit-monthly-list"></div></div>
         <div class="calendar-panel panel">
           <div class="calendar-head"><button class="secondary small-btn" id="prevMonth" aria-label="Vorheriger Monat">‹</button><h3 id="monthTitle"></h3><button class="secondary small-btn" id="nextMonth" aria-label="Nächster Monat">›</button></div>
           <div class="calendar-grid" id="calendarGrid"></div>
@@ -108,6 +110,29 @@
         <div class="section-heading"><div><div class="eyebrow">DEIN JAHR IN ERINNERUNGEN</div><h2>Jahresmomente</h2></div><button class="primary" id="addEventBtn">＋ Ereignis</button></div>
         <div class="monthly-panel panel"><div class="calendar-head"><button class="secondary small-btn" id="yearPrev">‹</button><h3 id="yearTitle"></h3><button class="secondary small-btn" id="yearNext">›</button></div><div id="yearCalendar" class="year-calendar"></div><div class="year-selection" id="yearSelection"></div><h3 class="year-events-title">Alle Ereignisse im Jahr</h3><div id="yearEvents" class="year-events"></div></div>
         <p class="privacy-note">Ereignisse können einen einzelnen Tag oder einen längeren Zeitraum umfassen. Vergangene Jahre bleiben erhalten.</p>
+      </section>
+
+      <section class="export-section" id="exportSection">
+        <div class="section-heading"><div><div class="eyebrow">AUSWÄHLEN & DRUCKEN</div><h2>Exporte</h2></div></div>
+        <div class="monthly-panel panel export-panel">
+          <p class="monthly-hint">Wähle die Inhalte und den Zeitraum. Danach öffnet sich eine druckfertige Ansicht. Im Druckdialog kannst du auch „Als PDF speichern“ wählen.</p>
+          <fieldset class="export-types"><legend>Welche Inhalte sollen enthalten sein?</legend>
+            <label><input type="checkbox" name="exportType" value="Zitate" checked> Zitate</label>
+            <label><input type="checkbox" name="exportType" value="Kindersprüche" checked> Kindersprüche</label>
+            <label><input type="checkbox" name="exportType" value="Meilensteine" checked> Meilensteine</label>
+            <label><input type="checkbox" name="exportType" value="Tagebuch" checked> Tagebucheinträge</label>
+            <label><input type="checkbox" name="exportType" value="Monatsnotizen" checked> Monatsnotizen</label>
+            <label><input type="checkbox" name="exportType" value="Jahresmomente" checked> Jahresmomente</label>
+          </fieldset>
+          <div class="export-filters">
+            <label>Von <input id="exportFrom" type="date"></label>
+            <label>Bis <input id="exportTo" type="date"></label>
+            <label>Person <select id="exportPerson"><option value="Alle">Alle</option><option>Tiago</option><option>Luan</option><option>Lira</option></select></label>
+          </div>
+          <label class="export-photo-option"><input id="exportPhotos" type="checkbox" checked> Fotos in den Export aufnehmen</label>
+          <button id="createPrintExport" class="primary">Druckansicht erstellen</button>
+          <p class="privacy-note">Die Druckansicht wird aus den Daten auf diesem Gerät erstellt. Es wird nichts online hochgeladen.</p>
+        </div>
       </section>
 
       <section class="storage-panel panel" id="storagePanel" aria-label="Speicherübersicht">

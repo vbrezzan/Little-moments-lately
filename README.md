@@ -60,3 +60,16 @@ Speicheranzeige (Version 7): zeigt belegten Speicher, geschätzten freien Speich
 - Service worker cache bumped to little-moments-v9.
 
 To update, replace all seven files in the existing GitHub Pages repository and commit. Existing local data is preserved by the database upgrade. As always, create a backup before updating as a precaution.
+
+
+## Habit Tracker – Monatsübersicht
+
+Die Monatsübersicht zeigt für jede Gewohnheit die Anzahl der erledigten Tage im ausgewählten Monat sowie die markierten Kalendertage. Pro Gewohnheit und Datum wird weiterhin nur ein erledigter Tag gespeichert. Die bestehende IndexedDB-Datenbank (Version 4) und vorhandene Einträge bleiben unverändert.
+
+## Exporte und globale Suche (Version 12)
+- Neuer Bereich „Exporte“ mit Auswahl von Zitaten, Kindersprüchen, Meilensteinen, Tagebucheinträgen, Monatsnotizen und Jahresmomenten.
+- Filter nach Zeitraum und Person; Fotos können in die Druckansicht aufgenommen oder ausgeschlossen werden.
+- Die Druckansicht kann über den Browser gedruckt oder als PDF gespeichert werden.
+- Die globale Suche berücksichtigt jetzt Erinnerungen, Monatsnotizen, Jahresmomente, Favoriten und Gewohnheiten. Bei einer Suchanfrage wird der aktive Kategorie-Filter nicht auf andere Bereiche angewendet.
+- IndexedDB bleibt auf Version 4; bestehende lokale Daten werden durch diese Erweiterung nicht migriert oder gelöscht.
+- Service-Worker-Cache auf little-moments-v12 aktualisiert.

@@ -26,3 +26,20 @@
 /* Year overview: month cards instead of individual dates */
 .year-calendar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.year-month{display:flex;flex-direction:column;align-items:flex-start;gap:5px;width:100%;min-height:94px;text-align:left;border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff;color:var(--ink);cursor:pointer}.year-month.selected{border-color:var(--accent);background:#f0ece4;outline:1px solid var(--accent)}.year-month-name{font-size:14px;font-weight:650;text-transform:capitalize}.year-month-count{font-size:11px;color:var(--accent-dark)}.year-month-preview{font-size:10px;color:var(--muted);line-height:1.35}.year-selection-item{align-items:flex-start}.year-selection-item strong{font-size:12px}.search-year-event{border-color:#d8d1c4;background:#faf9f6}
 @media(max-width:560px){.year-calendar{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.year-month{min-height:88px;padding:10px}.home-button{right:14px;bottom:14px}}
+
+/* Monthly habit overview */
+.habit-monthly-summary{margin-top:14px;padding:15px}
+.habit-summary-heading{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:12px}
+.habit-summary-heading h3{font-size:14px;margin:0;font-weight:650}
+.habit-monthly-list{display:grid;gap:12px}
+.habit-month-card{border:1px solid var(--line);border-radius:12px;padding:12px;background:#fff}
+.habit-month-top{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12px;margin-bottom:10px}
+.habit-month-top span{font-size:11px;color:var(--muted);white-space:nowrap}
+.habit-month-top b{font-size:15px;color:var(--ink)}
+.habit-month-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
+.habit-month-day{display:flex;align-items:center;justify-content:center;min-height:25px;border-radius:6px;background:#f5f3ee;color:#9a958b;font-size:10px}
+.habit-month-day.done{background:#dce9dc;color:#365b3a;font-weight:700}
+.habit-month-dates{font-size:10px;color:var(--muted);margin-top:9px;line-height:1.5}
+
+/* Export section and global search results */
+.export-section{margin:34px 0 0;scroll-margin-top:16px}.export-panel{display:grid;gap:14px}.export-types{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.export-types legend{font-size:12px;font-weight:700;padding:0 5px}.export-types label,.export-photo-option{display:flex;align-items:center;gap:8px;font-size:12px}.export-types input,.export-photo-option input{accent-color:var(--accent-dark)}.export-filters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.export-filters label{display:grid;gap:5px;font-size:11px;color:var(--muted)}.export-filters input,.export-filters select{width:100%;min-width:0;padding:9px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);font:inherit;font-size:12px}.search-extra{background:#fbfaf7}.search-extra p{white-space:pre-wrap}@media(max-width:480px){.export-filters{grid-template-columns:1fr}.export-types{grid-template-columns:1fr}}
