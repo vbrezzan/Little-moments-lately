@@ -40,6 +40,7 @@
         <button class="category" data-action="favorites"><span class="cat-icon">♡</span><b>Lieblingssammlung</b><small>Bücher, Filme & Serien</small></button>
         <button class="category" data-action="year"><span class="cat-icon">▦</span><b>Jahresmomente</b><small>Kalender & Ereignisse</small></button>
         <button class="category" data-action="export"><span class="cat-icon">⇩</span><b>Exporte</b><small>Drucken & PDF</small></button>
+        <button class="category" data-action="import"><span class="cat-icon">⇧</span><b>Importieren</b><small>Text erkennen & übernehmen</small></button>
       </section>
 
       <section class="memory-section" id="memorySection">
@@ -142,6 +143,40 @@
         </div>
       </section>
 
+      <section class="import-section" id="importSection">
+        <div class="section-heading"><div><div class="eyebrow">DATEIEN & FOTOS</div><h2>Importieren</h2></div></div>
+        <div class="monthly-panel panel import-panel">
+          <p class="monthly-hint">Wähle ein Foto, einen Screenshot, ein PDF-, Word- oder Textdokument. Der Text wird erkannt und kann vor dem Speichern bearbeitet und zugeordnet werden.</p>
+          <label class="import-file-label">Datei auswählen
+            <input id="memoryImportFile" type="file" accept="image/*,.pdf,.docx,.txt,.md">
+          </label>
+          <p id="importStatus" class="import-status" aria-live="polite">Die Verarbeitung von Fotos und gescannten PDFs benötigt eine Internetverbindung für die OCR-Sprachdaten.</p>
+          <div id="importPreview" class="import-preview" hidden>
+            <label>Erkannter Text<textarea id="importText" rows="8" placeholder="Der erkannte Text erscheint hier …"></textarea></label>
+            <div class="import-form-grid">
+              <label>Kategorie
+                <select id="importCategory">
+                  <option>Tagebuch</option><option>Kindersprüche</option><option>Zitate</option><option>Meilensteine</option><option>Fotos</option>
+                </select>
+              </label>
+              <label>Person
+                <select id="importPerson">
+                  <option value="">Keine Zuordnung</option><option>Tiago</option><option>Luan</option><option>Lira</option>
+                </select>
+              </label>
+              <label>Titel <input id="importTitle" maxlength="100" placeholder="Titel der Erinnerung"></label>
+              <label>Datum <input id="importDate" type="date"></label>
+            </div>
+            <label class="import-original-option"><input id="keepImportOriginal" type="checkbox" checked> Originalfoto bei der Erinnerung speichern (nur bei Bilddateien)</label>
+            <div class="form-actions">
+              <button type="button" class="secondary" id="clearImport">Verwerfen</button>
+              <button type="button" class="primary" id="saveImportedMemory">Erinnerung speichern</button>
+            </div>
+          </div>
+          <p class="privacy-note">Die Erkennung erfolgt im Browser mit Open-Source-Bibliotheken. Dateien werden nicht an einen KI-Dienst oder Server übertragen. Der erkannte Text kann Fehler enthalten – bitte vor dem Speichern prüfen.</p>
+        </div>
+      </section>
+
       <section class="storage-panel panel" id="storagePanel" aria-label="Speicherübersicht">
         <div class="eyebrow">SPEICHER & SICHERUNG</div>
         <h2>Dein Speicherplatz</h2>
@@ -176,6 +211,7 @@
       <input type="hidden" id="monthlyNoteId">
       <label>Für wen?<select id="monthlyNotePerson"><option>Tiago</option><option>Luan</option><option>Lira</option></select></label>
       <label>Notiz<textarea id="monthlyNoteText" rows="7" maxlength="5000" placeholder="Ein Gedanke, eine Beobachtung, etwas Lustiges oder etwas, das du nicht vergessen möchtest …" required></textarea></label>
+      <label>Sprachaufnahme (optional, max. 15 MB)<input id="monthlyAudioFile" type="file" accept="audio/*"></label><div id="monthlyAudioPreview" class="audio-preview"></div><p class="tiny-note">Die Aufnahme bleibt lokal gespeichert und wird in Backups aufgenommen.</p>
       <div class="form-actions"><button type="button" class="secondary" id="cancelMonthly">Abbrechen</button><button type="submit" class="primary">Speichern</button></div>
     </form>
   </dialog>
@@ -190,12 +226,13 @@
       <label>Erinnerung<textarea id="body" rows="5" placeholder="Was möchtest du festhalten?"></textarea></label>
       <label id="personLabel">Wer hat es gesagt / Für wen? <span class="optional">(optional)</span><input id="person" maxlength="60" placeholder="Zum Beispiel Tiago oder Luan"></label>
       <label>Foto <span class="optional">(optional, wird nur auf diesem Gerät gespeichert)</span><input id="photo" type="file" accept="image/*"></label>
-      <div id="audioField" hidden><label>Sprachaufnahme <span class="optional">(nur bei Kindersprüchen · max. 15 MB)</span><input id="audioFile" type="file" accept="audio/*"></label><div id="audioPreview" class="audio-preview"></div><p class="tiny-note">Die Originalaufnahme bleibt auf diesem Gerät gespeichert und wird in Backups aufgenommen. Keine Transkription und kein Upload an externe Dienste.</p></div>
+      <div id="audioField"><label><span id="audioFieldLabel">Sprachaufnahme (optional)</span> <span class="optional">(max. 15 MB)</span><input id="audioFile" type="file" accept="audio/*"></label><div id="audioPreview" class="audio-preview"></div><p class="tiny-note">Die Originalaufnahme bleibt auf diesem Gerät gespeichert und wird in Backups aufgenommen. Keine Transkription und kein Upload an externe Dienste.</p></div>
       <div id="photoPreview" class="photo-preview"></div>
       <div class="form-actions"><button type="button" class="secondary" id="cancelBtn">Abbrechen</button><button type="submit" class="primary">Speichern</button></div>
       <p class="tiny-note">Tipp: Fotos vergrößern die Backup-Datei. Sichere sie deshalb regelmäßig.</p>
     </form>
   </dialog>
+  <dialog id="readingViewDialog" class="reading-view-dialog"><button type="button" class="close reading-view-close" id="closeReadingView" aria-label="Schließen">×</button><article id="readingViewContent" class="reading-view-content"></article></dialog>
   <button id="homeButton" class="home-button" type="button" aria-label="Zur Startseite" title="Zur Startseite">⌂</button>
   <div id="toast" role="status" aria-live="polite"></div>
   <script src="app.js"></script>

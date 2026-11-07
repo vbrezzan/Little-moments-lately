@@ -82,3 +82,11 @@ Die Monatsübersicht zeigt für jede Gewohnheit die Anzahl der erledigten Tage i
 - Lieblingssammlung kann nach Kategorie, Status und Jahr gefiltert werden.
 - IndexedDB bleibt auf Version 4; vorhandene Daten werden nicht gelöscht oder migriert.
 - Service-Worker-Cache auf little-moments-v14 aktualisiert.
+
+
+## Version 15 – Audio, Import und Tagebuch-Vollansicht
+- Sprachaufnahmen können bei allen Erinnerungskategorien und bei Monatsnotizen angehängt werden. Sie werden lokal gespeichert, abgespielt und in JSON-Backups übernommen. Keine Transkription.
+- Importbereich für Bilder/Screenshots (OCR), PDFs, DOCX, TXT und Markdown. OCR benötigt beim ersten Einsatz eine Internetverbindung zum Laden der Bibliotheken/Sprachdaten; Dateien werden im Browser verarbeitet und nicht an einen KI-Dienst gesendet.
+- Lange Tagebucheinträge können über „Eintrag in Vollansicht lesen“ in einer ruhigen, lesefreundlichen Ansicht geöffnet werden.
+- IndexedDB bleibt auf Version 4; vorhandene Daten werden nicht gelöscht oder migriert. Service-Worker-Cache auf little-moments-v15 aktualisiert.
+- Audiodateien sind auf 15 MB pro Datei begrenzt. Große Medien können Backups und Gerätespeicher deutlich vergrößern.
