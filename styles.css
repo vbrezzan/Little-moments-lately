@@ -64,3 +64,13 @@
 .reading-view-photo{display:block;max-width:100%;max-height:480px;object-fit:contain;margin:28px auto 0;border-radius:14px}
 .reading-view-audio{margin-top:28px;padding-top:18px;border-top:1px solid var(--line)}
 .reading-view-audio audio{width:100%;max-width:420px;margin-top:10px}
+
+
+/* Direkte Monats- und Jahresnavigation */
+.date-filter-row,.date-jump{display:flex;align-items:end;gap:10px;flex-wrap:wrap;margin:12px 0 16px}
+.date-filter-row label,.date-jump label{display:flex;align-items:center;gap:7px;color:var(--muted,#777);font-size:.82rem}
+.date-filter-row select,.date-jump select{min-width:112px;max-width:100%;border:1px solid var(--line,#e6e0d8);border-radius:10px;background:var(--surface,#fff);color:var(--text,#333);padding:9px 11px;font:inherit}
+.date-jump{justify-content:center;margin:10px 0 14px}
+@media(max-width:420px){.date-filter-row{gap:8px}.date-filter-row label{flex:1;min-width:42%}.date-filter-row select{width:100%;min-width:0}.date-jump label{flex:1}.date-jump select{min-width:0;width:100%}}
+
+.all-memories-card{width:100%;display:flex;align-items:center;gap:14px;text-align:left;margin-top:14px;padding:16px 18px;border:1px solid #e5dfe9;border-radius:18px;background:#eae5ee;color:#71647d;cursor:pointer;font:inherit;box-shadow:0 2px 8px rgba(60,45,70,.04)}.all-memories-card b{display:block;font-size:1rem;color:#665b70}.all-memories-card small{display:block;margin-top:3px;color:#81768a;font-size:.8rem}.all-memories-icon{width:44px;height:44px;display:grid;place-items:center;border-radius:13px;background:#ddd5e5;font-size:1.55rem}.all-memories-arrow{margin-left:auto;font-size:1.5rem}

@@ -26,6 +26,7 @@
         <h1>Die kleinen Momente.<br><span>Für immer festgehalten.</span></h1>
         <p>Gedanken, Worte und Erinnerungen aus eurem Familienleben.</p>
         <button class="primary" id="quickAdd">＋ Moment festhalten</button>
+        <button class="all-memories-card" data-category="Alle" type="button"><span class="all-memories-icon">♡</span><span><b>Alle Erinnerungen</b><small>Deine gesamte Sammlung entdecken</small></span><span class="all-memories-arrow">›</span></button>
       </section>
 
       <section class="category-grid" aria-label="Kategorien">
@@ -34,7 +35,6 @@
         <button class="category" data-category="Zitate"><span class="cat-icon">“ ”</span><b>Zitate</b><small>Worte zum Bewahren</small></button>
         <button class="category" data-category="Meilensteine"><span class="cat-icon">✧</span><b>Meilensteine</b><small>Erste Male und mehr</small></button>
         <button class="category" data-category="Fotos"><span class="cat-icon">▧</span><b>Fotos</b><small>Bilder und Momente</small></button>
-        <button class="category" data-category="Alle"><span class="cat-icon">◷</span><b>Zeitreise</b><small>Alle Erinnerungen</small></button>
         <button class="category" data-action="tracker"><span class="cat-icon">✓</span><b>Habit Tracker</b><small>Deine Routinen</small></button>
         <button class="category" data-action="monthly"><span class="cat-icon">▤</span><b>Monatsnotizen</b><small>Gedanken sammeln</small></button>
         <button class="category" data-action="favorites"><span class="cat-icon">♡</span><b>Lieblingssammlung</b><small>Bücher, Filme & Serien</small></button>
@@ -49,6 +49,7 @@
           <span class="count" id="entryCount">0 Einträge</span>
         </div>
         <label class="search-wrap"><span>⌕</span><input id="search" type="search" placeholder="Erinnerungen suchen …" autocomplete="off"></label>
+        <div class="date-filter-row"><label>Jahr <select id="memoryYearFilter"><option value="Alle">Alle Jahre</option></select></label><label>Monat <select id="memoryMonthFilter"><option value="Alle">Alle Monate</option><option value="01">Januar</option><option value="02">Februar</option><option value="03">März</option><option value="04">April</option><option value="05">Mai</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">August</option><option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Dezember</option></select></label><button class="text-button" id="clearMemoryDateFilter" type="button">Zurücksetzen</button></div>
         <div class="filter-row" id="filters">
           <button class="filter active" data-filter="Alle">Alle</button>
           <button class="filter" data-filter="Tagebuch">Tagebuch</button>
@@ -58,7 +59,7 @@
           <button class="filter" data-filter="Fotos">Fotos</button>
         </div>
         <div id="diaryCalendarWrap" class="diary-calendar panel" hidden>
-          <div class="calendar-head"><button class="secondary small-btn" id="diaryPrevMonth" type="button" aria-label="Vorheriger Monat">‹</button><h3 id="diaryMonthTitle"></h3><button class="secondary small-btn" id="diaryNextMonth" type="button" aria-label="Nächster Monat">›</button></div>
+          <div class="calendar-head"><button class="secondary small-btn" id="diaryPrevMonth" type="button" aria-label="Vorheriger Monat">‹</button><h3 id="diaryMonthTitle"></h3><button class="secondary small-btn" id="diaryNextMonth" type="button" aria-label="Nächster Monat">›</button></div><div class="date-jump"><label>Monat <select id="diaryMonthSelect"></select></label><label>Jahr <select id="diaryYearSelect"></select></label></div>
           <div class="calendar-grid" id="diaryCalendarGrid"></div>
           <div class="diary-calendar-footer"><span id="diarySelectedLabel">Alle Tagebucheinträge</span><button class="text-button" id="diaryClearDate" type="button" hidden>Filter zurücksetzen</button></div>
         </div>
@@ -77,7 +78,7 @@
         <div id="habitList" class="habit-list"></div>
         <div class="habit-monthly-summary panel"><div class="habit-summary-heading"><h3>Monatsübersicht pro Gewohnheit</h3><span class="muted-small">Aktueller Kalendermonat</span></div><div id="habitMonthlySummary" class="habit-monthly-list"></div></div>
         <div class="calendar-panel panel">
-          <div class="calendar-head"><button class="secondary small-btn" id="prevMonth" aria-label="Vorheriger Monat">‹</button><h3 id="monthTitle"></h3><button class="secondary small-btn" id="nextMonth" aria-label="Nächster Monat">›</button></div>
+          <div class="calendar-head"><button class="secondary small-btn" id="prevMonth" aria-label="Vorheriger Monat">‹</button><h3 id="monthTitle"></h3><button class="secondary small-btn" id="nextMonth" aria-label="Nächster Monat">›</button></div><div class="date-jump"><label>Monat <select id="habitMonthSelect"></select></label><label>Jahr <select id="habitYearSelect"></select></label></div>
           <div class="calendar-grid" id="calendarGrid"></div>
           <div class="calendar-legend"><span><i class="legend-dot done-dot"></i>Mindestens eine Gewohnheit erledigt</span><span><i class="legend-dot full-dot"></i>Alle erledigt</span></div>
           <div class="day-details" id="dayDetails"></div>
@@ -99,7 +100,7 @@
       <section class="monthly-section" id="monthlySection">
         <div class="section-heading"><div><div class="eyebrow">GEDANKEN SAMMELN</div><h2>Monatsnotizen</h2></div><button class="primary" id="addMonthlyNote">＋ Notiz</button></div>
         <div class="monthly-panel panel">
-          <div class="calendar-head"><button class="secondary small-btn" id="monthlyPrev" aria-label="Vorheriger Monat">‹</button><h3 id="monthlyTitle"></h3><button class="secondary small-btn" id="monthlyNext" aria-label="Nächster Monat">›</button></div>
+          <div class="calendar-head"><button class="secondary small-btn" id="monthlyPrev" aria-label="Vorheriger Monat">‹</button><h3 id="monthlyTitle"></h3><button class="secondary small-btn" id="monthlyNext" aria-label="Nächster Monat">›</button></div><div class="date-jump"><label>Monat <select id="monthlyMonthSelect"></select></label><label>Jahr <select id="monthlyYearSelect"></select></label></div>
           <div class="person-tabs" id="monthlyPeople"><button class="person-tab active" data-person="Tiago">Tiago</button><button class="person-tab" data-person="Luan">Luan</button><button class="person-tab" data-person="Lira">Lira</button></div>
           <p class="monthly-hint" id="monthlyHint">Lose Gedanken, Beobachtungen und kleine Entwicklungen – alles darf hier Platz haben.</p>
           <div id="monthlyNotes" class="monthly-notes"></div>
@@ -116,7 +117,7 @@
       </section>
       <section class="year-section" id="yearSection">
         <div class="section-heading"><div><div class="eyebrow">DEIN JAHR IN ERINNERUNGEN</div><h2>Jahresmomente</h2></div><button class="primary" id="addEventBtn">＋ Ereignis</button></div>
-        <div class="monthly-panel panel"><div class="calendar-head"><button class="secondary small-btn" id="yearPrev">‹</button><h3 id="yearTitle"></h3><button class="secondary small-btn" id="yearNext">›</button></div><div id="yearCalendar" class="year-calendar"></div><div class="year-selection" id="yearSelection"></div><h3 class="year-events-title">Alle Ereignisse im Jahr</h3><div id="yearEvents" class="year-events"></div></div>
+        <div class="monthly-panel panel"><div class="calendar-head"><button class="secondary small-btn" id="yearPrev">‹</button><h3 id="yearTitle"></h3><button class="secondary small-btn" id="yearNext">›</button></div><div class="date-jump"><label>Jahr <select id="yearDirectSelect"></select></label><label>Monat <select id="yearMonthDirectSelect"></select></label></div><div id="yearCalendar" class="year-calendar"></div><div class="year-selection" id="yearSelection"></div><h3 class="year-events-title">Alle Ereignisse im Jahr</h3><div id="yearEvents" class="year-events"></div></div>
         <p class="privacy-note">Ereignisse können einen einzelnen Tag oder einen längeren Zeitraum umfassen. Vergangene Jahre bleiben erhalten.</p>
       </section>
 
