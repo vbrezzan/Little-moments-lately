@@ -72,11 +72,28 @@ $("entryForm").addEventListener("submit",async e=>{e.preventDefault();const id=$
 $("closeDialog").onclick=$("cancelBtn").onclick=()=>$("editor").close();$("quickAdd").onclick=()=>openEditor();
 const allMemoriesButton=document.querySelector(".all-memories-card");
 if(allMemoriesButton)allMemoriesButton.addEventListener("click",async()=>{
-  activeFilter="Alle";selectedDiaryDate="";memoryYearFilter="Alle";memoryMonthFilter="Alle";
-  $("search").value="";$("memoryYearFilter").value="Alle";$("memoryMonthFilter").value="Alle";
+  activeFilter="Alle";
+  selectedDiaryDate="";
+  memoryYearFilter="Alle";
+  memoryMonthFilter="Alle";
+  $("search").value="";
+  $("memoryYearFilter").value="Alle";
+  $("memoryMonthFilter").value="Alle";
+
+  // Always expand the collection, including when it was previously collapsed.
+  const section=$("memorySection");
+  const body=section?.querySelector(".section-body");
+  const toggle=section?.querySelector(".section-toggle");
+  if(body) body.hidden=false;
+  if(toggle){
+    toggle.textContent="−";
+    toggle.setAttribute("aria-expanded","true");
+    toggle.setAttribute("aria-label","Zuklappen: Erinnerungen");
+  }
+  localStorage.setItem("little-moments-section-memorySection","open");
+
   await render();
-  const section=$("memorySection"),body=section?.querySelector(":scope > .section-body"),toggle=section?.querySelector(":scope > .section-heading .section-toggle");
-  if(body?.hidden){body.hidden=false;if(toggle){toggle.textContent="−";toggle.setAttribute("aria-expanded","true");toggle.setAttribute("aria-label","Zuklappen: Erinnerungen");}localStorage.setItem("little-moments-section-memorySection","open");}
+  document.querySelectorAll("[data-filter]").forEach(b=>b.classList.toggle("active",b.dataset.filter==="Alle"));
   section?.scrollIntoView({behavior:"smooth",block:"start"});
 });
 document.querySelectorAll(".category").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.action==="tracker"){$("trackerSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="monthly"){$("monthlySection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="favorites"){$("favoritesSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="year"){$("yearSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="export"){$("exportSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="import"){$("importSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.category==="Alle"){activeFilter="Alle";render()}else openEditor(b.dataset.category)}));
