@@ -73,3 +73,13 @@ Die Monatsübersicht zeigt für jede Gewohnheit die Anzahl der erledigten Tage i
 - Die globale Suche berücksichtigt jetzt Erinnerungen, Monatsnotizen, Jahresmomente, Favoriten und Gewohnheiten. Bei einer Suchanfrage wird der aktive Kategorie-Filter nicht auf andere Bereiche angewendet.
 - IndexedDB bleibt auf Version 4; bestehende lokale Daten werden durch diese Erweiterung nicht migriert oder gelöscht.
 - Service-Worker-Cache auf little-moments-v12 aktualisiert.
+
+
+## Datei-Import (Version 13)
+- Neuer Bereich „Importieren“ für Fotos/Screenshots, PDF, DOCX, TXT und Markdown.
+- Fotos und bildbasierte PDF-Seiten werden im Browser mit Tesseract.js (Deutsch und Portugiesisch) per OCR erkannt.
+- PDF-Text wird mit PDF.js extrahiert; DOCX mit Mammoth.js.
+- Erkannter Text kann bearbeitet und als Tagebuch, Kinderspruch, Zitat, Meilenstein oder Foto-Erinnerung mit Person und Datum gespeichert werden.
+- Die Erkennung läuft lokal im Browser; die benötigten Bibliotheken und OCR-Sprachdaten werden beim ersten Gebrauch aus einem CDN geladen. Dateien werden nicht an einen KI-Dienst übertragen.
+- IndexedDB bleibt Version 4. Bestehende Erinnerungen und andere lokale Daten werden nicht verändert.
+- Service-Worker-Cache auf little-moments-v13 aktualisiert.

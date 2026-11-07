@@ -42,7 +42,7 @@ $("photo").addEventListener("change",async e=>{const f=e.target.files[0];if(!f)r
 $("category").addEventListener("change",()=>{$("personLabel").firstChild.textContent=$("category").value==="Kindersprüche"?"Gesagt von ":"Person ";});
 $("entryForm").addEventListener("submit",async e=>{e.preventDefault();const id=$("entryId").value||crypto.randomUUID();const old=$("entryId").value?(await allEntries()).find(x=>x.id===id):null;const entry={id,category:$("category").value,title:$("title").value.trim(),date:$("date").value,body:$("body").value.trim(),person:$("person").value.trim(),photo:pendingPhoto,createdAt:old?.createdAt||Date.now(),updatedAt:Date.now()};if(!entry.title||!entry.date)return;try{await put(ENTRY_STORE,entry);$("editor").close();await render();toast("Erinnerung gespeichert.")}catch(err){toast("Speichern fehlgeschlagen. Möglicherweise ist der Gerätespeicher voll.")}});
 $("closeDialog").onclick=$("cancelBtn").onclick=()=>$("editor").close();$("quickAdd").onclick=()=>openEditor();
-document.querySelectorAll(".category").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.action==="tracker"){$("trackerSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="monthly"){$("monthlySection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="favorites"){$("favoritesSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="year"){$("yearSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="export"){$("exportSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.category==="Alle"){activeFilter="Alle";render()}else openEditor(b.dataset.category)}));
+document.querySelectorAll(".category").forEach(b=>b.addEventListener("click",()=>{if(b.dataset.action==="tracker"){$("trackerSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="monthly"){$("monthlySection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="favorites"){$("favoritesSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="year"){$("yearSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="export"){$("exportSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.action==="import"){$("importSection").scrollIntoView({behavior:"smooth"});return}if(b.dataset.category==="Alle"){activeFilter="Alle";render()}else openEditor(b.dataset.category)}));
 document.querySelectorAll(".filter").forEach(b=>b.addEventListener("click",()=>{activeFilter=b.dataset.filter;render()}));$("search").addEventListener("input",render);
 $("entries").addEventListener("click",async e=>{const edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]"),yearEdit=e.target.closest("[data-year-search-edit]"),monthEdit=e.target.closest("[data-month-search-edit]"),favEdit=e.target.closest("[data-fav-search-edit]");if(edit){const entry=(await allEntries()).find(x=>x.id===edit.dataset.edit);if(entry)openEditor(entry.category,entry)}if(yearEdit){const item=(await allYearEvents()).find(x=>x.id===yearEdit.dataset.yearSearchEdit);if(item)openEventEditor(item)}if(monthEdit){const item=(await allMonthlyNotes()).find(x=>x.id===monthEdit.dataset.monthSearchEdit);if(item){monthlyPerson=item.person;monthlyMonth=new Date(`${item.month}-01T12:00:00`);await renderMonthly();openMonthlyEditor(item)}}if(favEdit){const item=(await allFavorites()).find(x=>x.id===favEdit.dataset.favSearchEdit);if(item)openFavoriteEditor(item)}if(del&&confirm("Möchtest du diese Erinnerung wirklich löschen?")){await remove(ENTRY_STORE,del.dataset.delete);render();toast("Eintrag gelöscht.")}});
 async function renderTracker(){const habits=await allHabits(),day=selectedDay||today();const isToday=day===today();$("trackerDayHeading").textContent=isToday?"Heute":"Ausgewählter Tag";$("todayLabel").textContent=dateLabel(day);$("trackerTodayBtn").hidden=isToday;const done=habits.filter(h=>h.completed?.[day]).length;$("habitProgress").textContent=`${done} / ${habits.length} erledigt`;
@@ -131,10 +131,96 @@ $("createPrintExport").addEventListener("click",async()=>{
   printExportDocument("Little Moments – Export",items,printWindow);
 });
 
+
+// Datei-Import: lokale Textextraktion und OCR (keine Übertragung der Dateien an einen Server)
+function loadExternalScript(src){
+  return new Promise((resolve,reject)=>{
+    const existing=[...document.scripts].find(s=>s.src===src);
+    if(existing){if(existing.dataset.loaded==="true")return resolve();existing.addEventListener("load",resolve,{once:true});existing.addEventListener("error",reject,{once:true});return}
+    const script=document.createElement("script");script.src=src;script.async=true;
+    script.onload=()=>{script.dataset.loaded="true";resolve()};script.onerror=()=>reject(new Error("Eine benötigte Bibliothek konnte nicht geladen werden."));
+    document.head.appendChild(script);
+  });
+}
+async function recognizeImage(file){
+  await loadExternalScript("https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js");
+  if(!window.Tesseract)throw new Error("OCR konnte nicht gestartet werden.");
+  const worker=await Tesseract.createWorker("deu+por",1,{logger:m=>{if(m.status==="recognizing text")$("importStatus").textContent=`Texterkennung: ${Math.round((m.progress||0)*100)} %`;}});
+  try{const result=await worker.recognize(file);return result.data.text||""}finally{await worker.terminate()}
+}
+async function extractPdf(file){
+  await loadExternalScript("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js");
+  if(!window.pdfjsLib)throw new Error("PDF-Verarbeitung konnte nicht geladen werden.");
+  pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  const data=new Uint8Array(await file.arrayBuffer()),pdf=await pdfjsLib.getDocument({data}).promise;
+  const chunks=[];
+  for(let n=1;n<=pdf.numPages;n++){
+    $("importStatus").textContent=`PDF wird gelesen: Seite ${n} von ${pdf.numPages}`;
+    const page=await pdf.getPage(n),content=await page.getTextContent();
+    let text=content.items.map(x=>x.str).join(" ").trim();
+    if(!text){
+      const viewport=page.getViewport({scale:1.7}),canvas=document.createElement("canvas");
+      canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+      await page.render({canvasContext:canvas.getContext("2d"),viewport}).promise;
+      const blob=await new Promise(resolve=>canvas.toBlob(resolve,"image/png"));
+      text=await recognizeImage(blob);canvas.width=canvas.height=1;
+    }
+    if(text)chunks.push(`Seite ${n}\n${text}`);
+  }
+  return chunks.join("\n\n");
+}
+async function extractImportText(file){
+  const name=file.name.toLowerCase();
+  if(file.type.startsWith("image/"))return await recognizeImage(file);
+  if(name.endsWith(".pdf")||file.type==="application/pdf")return await extractPdf(file);
+  if(name.endsWith(".docx")){
+    await loadExternalScript("https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js");
+    if(!window.mammoth)throw new Error("Word-Dokument konnte nicht gelesen werden.");
+    const result=await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()});return result.value||"";
+  }
+  if(name.endsWith(".txt")||name.endsWith(".md")||name.endsWith(".rtf")||file.type.startsWith("text/"))return await file.text();
+  throw new Error("Dieses Dateiformat wird nicht unterstützt. Verwende Foto, PDF, DOCX, TXT oder MD.");
+}
+$("memoryImportFile").addEventListener("change",async e=>{
+  const file=e.target.files?.[0];if(!file)return;
+  $("importPreview").hidden=true;$("importStatus").textContent=`„${file.name}“ wird verarbeitet …`;
+  try{
+    const text=await extractImportText(file),clean=text.replace(/\u0000/g,"").trim();
+    if(!clean)throw new Error("Es wurde kein Text erkannt. Bei Fotos bitte auf gute Beleuchtung und lesbare Schrift achten.");
+    $("importText").value=clean;$("importTitle").value=file.name.replace(/\.[^.]+$/,"").slice(0,100);
+    $("importDate").value=today();
+    const lower=clean.toLowerCase();
+    let suggestedPerson="";
+    if(/\\btiago\\b/i.test(clean))suggestedPerson="Tiago";
+    else if(/\\bluan\\b/i.test(clean))suggestedPerson="Luan";
+    else if(/\\blira\\b/i.test(clean))suggestedPerson="Lira";
+    let suggestedCategory="Tagebuch";
+    if(/\\b(sagte|sagt|hat gesagt|wörtlich|wortlaut)\\b/i.test(clean))suggestedCategory="Kindersprüche";
+    $("importCategory").value=suggestedCategory;$("importPerson").value=suggestedPerson;
+    $("keepImportOriginal").checked=file.type.startsWith("image/");
+    $("keepImportOriginal").disabled=!file.type.startsWith("image/");
+    $("importPreview").hidden=false;$("importStatus").textContent=`Text erkannt (${clean.length.toLocaleString("de-DE")} Zeichen). Bitte prüfen und zuordnen.`;
+    window.pendingImportedPhoto=file.type.startsWith("image/")?await compressPhoto(file):null;
+  }catch(err){$("importStatus").textContent=err.message||"Datei konnte nicht verarbeitet werden."}
+});
+$("clearImport").addEventListener("click",()=>{
+  $("memoryImportFile").value="";$("importText").value="";$("importTitle").value="";$("importPreview").hidden=true;
+  $("importStatus").textContent="Import verworfen.";window.pendingImportedPhoto=null;
+});
+$("saveImportedMemory").addEventListener("click",async()=>{
+  const body=$("importText").value.trim(),title=$("importTitle").value.trim()||"Importierte Erinnerung",date=$("importDate").value||today();
+  if(!body){toast("Bitte zuerst Text einfügen oder erkennen lassen.");return}
+  const category=$("importCategory").value,person=$("importPerson").value;
+  const entry={id:crypto.randomUUID(),category,title,date,body,person,photo:$("keepImportOriginal").checked?window.pendingImportedPhoto:null,createdAt:Date.now(),updatedAt:Date.now()};
+  try{await put(ENTRY_STORE,entry);await render();$("search").value="";activeFilter="Alle";await render();$("clearImport").click();toast("Erinnerung wurde gespeichert.");}
+  catch(err){toast("Speichern fehlgeschlagen. Bitte Speicherplatz prüfen.")}
+});
+
+
 function setupCollapsibleSections(){
   const specs=[
     ["#memorySection","Erinnerungen",true],["#trackerSection","Habit Tracker",false],["#monthlySection","Monatsnotizen",false],
-    ["#favoritesSection","Lieblingssammlung",false],["#yearSection","Jahresmomente",false],["#exportSection","Exporte",false],["#storagePanel","Speicher",false],["#backupPanel","Backup",false]
+    ["#favoritesSection","Lieblingssammlung",false],["#yearSection","Jahresmomente",false],["#exportSection","Exporte",false],["#importSection","Importieren",false],["#storagePanel","Speicher",false],["#backupPanel","Backup",false]
   ];
   for(const [selector,label,defaultOpen] of specs){
     const section=document.querySelector(selector);if(!section)continue;
