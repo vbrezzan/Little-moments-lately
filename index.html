@@ -39,8 +39,6 @@
         <button class="category" data-action="monthly"><span class="cat-icon">▤</span><b>Monatsnotizen</b><small>Gedanken sammeln</small></button>
         <button class="category" data-action="favorites"><span class="cat-icon">♡</span><b>Lieblingssammlung</b><small>Bücher, Filme & Serien</small></button>
         <button class="category" data-action="year"><span class="cat-icon">▦</span><b>Jahresmomente</b><small>Kalender & Ereignisse</small></button>
-        <button class="category" data-action="export"><span class="cat-icon">⇩</span><b>Exporte</b><small>Drucken & PDF</small></button>
-        <button class="category" data-action="import"><span class="cat-icon">⇧</span><b>Importieren</b><small>Text erkennen & übernehmen</small></button>
       </section>
 
       <section class="memory-section" id="memorySection">
@@ -121,6 +119,27 @@
         <p class="privacy-note">Ereignisse können einen einzelnen Tag oder einen längeren Zeitraum umfassen. Vergangene Jahre bleiben erhalten.</p>
       </section>
 
+      <section class="storage-panel panel" id="storagePanel" aria-label="Speicherübersicht">
+        <div class="eyebrow">SPEICHER & SICHERUNG</div>
+        <h2>Dein Speicherplatz</h2>
+        <p id="storageUsage" class="storage-usage">Speicherbelegung wird geprüft …</p>
+        <div class="storage-meter"><div id="storageMeterFill"></div></div>
+        <p id="lastBackupLabel" class="privacy-note">Noch kein Backup auf diesem Gerät vermerkt.</p>
+      </section>
+
+      <section class="backup-panel panel" id="backupPanel">
+        <div class="backup-copy">
+          <div class="eyebrow">DEINE DATEN</div>
+          <h2>Deine Erinnerungen bleiben bei dir.</h2>
+          <p>Die Einträge werden auf diesem Gerät gespeichert. Erstelle regelmäßig eine Backup-Datei und bewahre sie sicher auf.</p>
+        </div>
+        <div class="backup-actions">
+          <button id="exportBtn" class="secondary">↓ Backup erstellen</button>
+          <label class="secondary import-label">↑ Backup wiederherstellen<input id="importInput" type="file" accept="application/json,.json" hidden></label>
+        </div>
+        <p class="privacy-note">Beim Import werden nur Einträge mit bisher unbekannter ID ergänzt. Vorhandene Einträge bleiben unverändert. Privat auf diesem Gerät · Keine Cloud-Synchronisierung.</p>
+      </section>
+
       <section class="export-section" id="exportSection">
         <div class="section-heading"><div><div class="eyebrow">AUSWÄHLEN & DRUCKEN</div><h2>Exporte</h2></div></div>
         <div class="monthly-panel panel export-panel">
@@ -178,26 +197,6 @@
         </div>
       </section>
 
-      <section class="storage-panel panel" id="storagePanel" aria-label="Speicherübersicht">
-        <div class="eyebrow">SPEICHER & SICHERUNG</div>
-        <h2>Dein Speicherplatz</h2>
-        <p id="storageUsage" class="storage-usage">Speicherbelegung wird geprüft …</p>
-        <div class="storage-meter"><div id="storageMeterFill"></div></div>
-        <p id="lastBackupLabel" class="privacy-note">Noch kein Backup auf diesem Gerät vermerkt.</p>
-      </section>
-
-      <section class="backup-panel panel" id="backupPanel">
-        <div class="backup-copy">
-          <div class="eyebrow">DEINE DATEN</div>
-          <h2>Deine Erinnerungen bleiben bei dir.</h2>
-          <p>Die Einträge werden auf diesem Gerät gespeichert. Erstelle regelmäßig eine Backup-Datei und bewahre sie sicher auf.</p>
-        </div>
-        <div class="backup-actions">
-          <button id="exportBtn" class="secondary">↓ Backup erstellen</button>
-          <label class="secondary import-label">↑ Backup wiederherstellen<input id="importInput" type="file" accept="application/json,.json" hidden></label>
-        </div>
-        <p class="privacy-note">Beim Import werden nur Einträge mit bisher unbekannter ID ergänzt. Vorhandene Einträge bleiben unverändert. Privat auf diesem Gerät · Keine Cloud-Synchronisierung.</p>
-      </section>
     </main>
     <footer>Little Moments <span>·</span> Deine Erinnerungen, an einem Ort.</footer>
   </div>
