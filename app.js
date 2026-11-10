@@ -26,7 +26,7 @@ function monthYearFromSelects(monthId,yearId){return new Date(Number($(yearId).v
 function memoryYears(entries){const ys=entries.map(e=>Number((e.date||"").slice(0,4))).filter(y=>y>1900);const min=ys.length?Math.min(...ys):new Date().getFullYear();return Array.from({length:new Date().getFullYear()+1-min+1},(_,i)=>new Date().getFullYear()+1-i)}
 async function render(){
   const all=await allEntries(),query=$("search").value.trim().toLowerCase();
-  const area=$("searchAreaFilter")?.value||"Alle",category=$("searchCategoryFilter")?.value||"Alle";
+  const area=$("searchAreaFilter")?.value||"Alle",category=($("searchCategoryFilter")?.value==="Alle"&&activeFilter!=="Alle")?activeFilter:($("searchCategoryFilter")?.value||"Alle");
   const year=memoryYearFilter,month=memoryMonthFilter;
   const [allEvents,allNotes,allFavs]=await Promise.all([allYearEvents(),allMonthlyNotes(),allFavorites()]);
   const years=[...new Set([...all.map(e=>Number((e.date||"").slice(0,4))),...allEvents.map(e=>Number((e.start||"").slice(0,4))),...allNotes.map(n=>Number((n.month||"").slice(0,4))),...allFavs.map(v=>Number(v.year))].filter(y=>y>1900))].sort((x,y)=>y-x);
@@ -88,7 +88,7 @@ $("entryForm").addEventListener("submit",async e=>{e.preventDefault();const id=$
 $("closeDialog").onclick=$("cancelBtn").onclick=()=>$("editor").close();$("quickAdd").onclick=()=>$("quickAddMenu").showModal();$("closeQuickAdd").onclick=()=>$("quickAddMenu").close();$("quickAddMenu").addEventListener("click",e=>{const b=e.target.closest("[data-quick-type]");if(!b)return;const type=b.dataset.quickType;$("quickAddMenu").close();if(type==="Monatsnotiz"){monthlyMonth=new Date(new Date().getFullYear(),new Date().getMonth(),1);openMonthlyEditor();return}if(type==="Jahresmoment"){yearView=new Date().getFullYear();selectedYearMonth=new Date().getMonth();openEventEditor();return}openEditor(type)});
 const allMemoriesButton=document.querySelector(".all-memories-card");
 if(allMemoriesButton)allMemoriesButton.addEventListener("click",async()=>{
-  activeFilter="Alle";
+  activeFilter="Alle";$("searchCategoryFilter").value="Alle";
   selectedDiaryDate="";
   memoryYearFilter="Alle";
   memoryMonthFilter="Alle";
@@ -126,7 +126,7 @@ document.querySelectorAll(".category").forEach(b=>b.addEventListener("click",asy
   const routes={tracker:"#trackerSection",monthly:"#monthlySection",favorites:"#favoritesSection",year:"#yearSection"};
   if(routes[b.dataset.action]){revealSection(routes[b.dataset.action]);return}
   if(b.dataset.category){
-    activeFilter=b.dataset.category;selectedDiaryDate="";
+    activeFilter=b.dataset.category;$("searchCategoryFilter").value=activeFilter;selectedDiaryDate="";
     memoryYearFilter="Alle";memoryMonthFilter="Alle";
     $("search").value="";$("memoryYearFilter").value="Alle";$("memoryMonthFilter").value="Alle";
     await render();
@@ -134,7 +134,7 @@ document.querySelectorAll(".category").forEach(b=>b.addEventListener("click",asy
     revealSection("#memorySection");
   }
 }));
-document.querySelectorAll(".filter").forEach(b=>b.addEventListener("click",()=>{activeFilter=b.dataset.filter;render()}));$("search").addEventListener("input",render);
+document.querySelectorAll(".filter").forEach(b=>b.addEventListener("click",()=>{activeFilter=b.dataset.filter;$("searchCategoryFilter").value=activeFilter;render()}));$("search").addEventListener("input",render);
 $("entries").addEventListener("click",async e=>{const view=e.target.closest("[data-view-entry]"),edit=e.target.closest("[data-edit]"),del=e.target.closest("[data-delete]"),yearEdit=e.target.closest("[data-year-search-edit]"),monthEdit=e.target.closest("[data-month-search-edit]"),favEdit=e.target.closest("[data-fav-search-edit]");if(view){const entry=(await allEntries()).find(x=>x.id===view.dataset.viewEntry);if(entry)openEntryReadingView(entry)}if(edit){const entry=(await allEntries()).find(x=>x.id===edit.dataset.edit);if(entry)openEditor(entry.category,entry)}if(yearEdit){const item=(await allYearEvents()).find(x=>x.id===yearEdit.dataset.yearSearchEdit);if(item)openEventEditor(item)}if(monthEdit){const item=(await allMonthlyNotes()).find(x=>x.id===monthEdit.dataset.monthSearchEdit);if(item){monthlyPerson=item.person;monthlyMonth=new Date(`${item.month}-01T12:00:00`);await renderMonthly();openMonthlyEditor(item)}}if(favEdit){const item=(await allFavorites()).find(x=>x.id===favEdit.dataset.favSearchEdit);if(item)openFavoriteEditor(item)}if(del&&confirm("Möchtest du diese Erinnerung wirklich löschen?")){await remove(ENTRY_STORE,del.dataset.delete);render();toast("Eintrag gelöscht.")}});
 function openEntryReadingView(entry){
   $("readingViewContent").innerHTML=`<div class="reading-view-meta">${esc(entry.category)} · ${dateLabel(entry.date)}${entry.person?` · ${esc(entry.person)}`:""}</div><h2>${esc(entry.title)}</h2><div class="reading-view-body">${esc(entry.body||"")}</div>${entry.photo?`<img class="reading-view-photo" src="${entry.photo}" alt="Foto zur Erinnerung">`:""}${entry.audio?`<div class="reading-view-audio"><div class="eyebrow">SPRACHAUFNAHME</div><audio controls preload="metadata" src="${entry.audio}"></audio></div>`:""}`;
